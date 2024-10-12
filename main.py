@@ -12,6 +12,7 @@ def play_game():
     board = initialize_board()
     move_count = 0
 
+    print("Game Start!\n Player 1(X) starts with [3,4], Player 2(0) starts with [3,3]")
     while True:
         print("=" * 30)  # Separator for clarity between moves
         print_board(board)
@@ -39,10 +40,11 @@ def play_game():
 
         move_count += 1
 
-    print("Game is Over!")
     print("=" * 30)
     print_board(board)
 
+    print("Game is Over!")
+    
     if winner == 'X':
         print("Player 1 (X) wins!")
     elif winner == 'O':
