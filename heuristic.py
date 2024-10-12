@@ -3,15 +3,58 @@
 def evaluate_board(board):
     """
     Evaluate the board state by counting specific patterns.
+    Also detects if either player has an imminent winning move.
     :param board: The current game board (5x6 grid).
-    :return: A heuristic score based on pattern detection.
+    :return: A heuristic score based on pattern detection or immediate win detection.
     """
+    # Check if Player 1 (X) has a winning move
+    if has_imminent_win(board, 'X'):
+        return float('inf')  # Player 1 should win, return maximum value
+    
+    # Check if Player 2 (0) has a winning move
+    if has_imminent_win(board, 'O'):
+        return -float('inf')  # Player 2 should win, return minimum value
+
+    # Otherwise, calculate the heuristic score based on patterns
     score = 0
     score += 200 * count_two_side_open_3_in_a_row(board, 'X') - 80 * count_two_side_open_3_in_a_row(board, 'O')
     score += 150 * count_one_side_open_3_in_a_row(board, 'X') - 40 * count_one_side_open_3_in_a_row(board, 'O')
     score += 20 * count_two_side_open_2_in_a_row(board, 'X') - 15 * count_two_side_open_2_in_a_row(board, 'O')
     score += 5 * count_one_side_open_2_in_a_row(board, 'X') - 2 * count_one_side_open_2_in_a_row(board, 'O')
     return score
+
+def has_imminent_win(board, player):
+    """
+    Check if the given player has an imminent win (a 4-in-a-row).
+    :param board: The current game board.
+    :param player: The player ('X' or 'O') to check for an imminent win.
+    :return: True if the player has a 4-in-a-row, otherwise False.
+    """
+    # Check horizontal wins
+    for row in range(5):
+        for col in range(3):  # Check up to column 3 to avoid out of bounds
+            if board[row][col] == player and board[row][col + 1] == player and board[row][col + 2] == player and board[row][col + 3] == player:
+                return True
+    
+    # Check vertical wins
+    for col in range(6):
+        for row in range(2):  # Check up to row 2 to avoid out of bounds
+            if board[row][col] == player and board[row + 1][col] == player and board[row + 2][col] == player and board[row + 3][col] == player:
+                return True
+    
+    # Check diagonal (bottom-left to top-right)
+    for row in range(2):
+        for col in range(3):
+            if board[row][col] == player and board[row + 1][col + 1] == player and board[row + 2][col + 2] == player and board[row + 3][col + 3] == player:
+                return True
+
+    # Check diagonal (top-left to bottom-right)
+    for row in range(3, 5):
+        for col in range(3):
+            if board[row][col] == player and board[row - 1][col + 1] == player and board[row - 2][col + 2] == player and board[row - 3][col + 3] == player:
+                return True
+    
+    return False
 
 def is_one_side_open(board, row, col, direction, length, player):
     """
