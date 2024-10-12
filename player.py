@@ -1,10 +1,11 @@
-from heuristic import evaluate_board  # Import the heuristic evaluation function
-from game import is_terminal_state  # Import function to check if the game has ended
+# CS4750 HW4 Group 32
 
-# Function to determine the best move using the minimax algorithm
+from heuristic import evaluate_board 
+
+# Function to determine the best move using the minimax algorithm with Alpha-Beta pruning
 def minimax_move(board, depth, player):
     """
-    Function to determine the best move for the given player using the minimax algorithm.
+    Function to determine the best move for the given player using the minimax algorithm with Alpha-Beta pruning.
     Also tracks the number of nodes generated during the minimax search.
     
     :param board: Current state of the board.
@@ -15,23 +16,28 @@ def minimax_move(board, depth, player):
     node_count = [0]  # Initialize node count (using a list for mutability)
 
     if player == 'X':
-        best_move, _ = minimax(board, depth, True, 'X', node_count)  # Player X is maximizing
+        best_move, _ = minimax(board, depth, True, 'X', node_count, float('-inf'), float('inf'))  # Player X is maximizing
     else:
-        best_move, _ = minimax(board, depth, True, 'O', node_count)  # Player O is maximizing
+        best_move, _ = minimax(board, depth, True, 'O', node_count, float('-inf'), float('inf'))  # Player O is maximizing
     
     return best_move, node_count[0]  # Return the best move and the number of nodes generated
 
-# Recursive minimax algorithm
-def minimax(board, depth, is_maximizing, player, node_count):
+# Recursive minimax algorithm with Alpha-Beta pruning
+def minimax(board, depth, is_maximizing, player, node_count, alpha, beta):
     """
-    Minimax recursive function to explore the game tree and determine the optimal move.
+    Minimax recursive function with Alpha-Beta pruning to explore the game tree and determine the optimal move.
     :param board: Current state of the board.
     :param depth: Remaining depth to explore.
     :param is_maximizing: Boolean to determine if it's the maximizing player's turn.
     :param player: The current player ('X' or 'O').
     :param node_count: A mutable counter for tracking the number of nodes generated.
+    :param alpha: Alpha value for Alpha-Beta pruning (best option for the maximizer).
+    :param beta: Beta value for Alpha-Beta pruning (best option for the minimizer).
     :return: A tuple of (best_move, evaluation score).
     """
+    # Import is_terminal_state only when the function is called, to avoid circular import
+    from game import is_terminal_state
+    
     # Increment node count for each recursive call
     node_count[0] += 1
 
@@ -49,10 +55,13 @@ def minimax(board, depth, is_maximizing, player, node_count):
 
         for move in possible_moves:
             new_board = make_move([row[:] for row in board], move, player)
-            _, eval = minimax(new_board, depth - 1, False, 'O', node_count)  # Minimize opponent
+            _, eval = minimax(new_board, depth - 1, False, 'O', node_count, alpha, beta)  # Minimize opponent
             if eval > max_eval:
                 max_eval = eval
                 best_move = move  # Update best move with the highest eval
+            alpha = max(alpha, eval)
+            if beta <= alpha:  # Alpha-Beta pruning
+                break
 
         return best_move, max_eval  # Return the best move and the highest evaluation score
 
@@ -66,10 +75,13 @@ def minimax(board, depth, is_maximizing, player, node_count):
 
         for move in possible_moves:
             new_board = make_move([row[:] for row in board], move, 'O')
-            _, eval = minimax(new_board, depth - 1, True, 'X', node_count)  # Maximize opponent
+            _, eval = minimax(new_board, depth - 1, True, 'X', node_count, alpha, beta)  # Maximize opponent
             if eval < min_eval:
                 min_eval = eval
                 best_move = move  # Update best move with the lowest eval
+            beta = min(beta, eval)
+            if beta <= alpha:  # Alpha-Beta pruning
+                break
 
         return best_move, min_eval  # Return the best move and the lowest evaluation score
 

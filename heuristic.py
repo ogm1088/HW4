@@ -1,4 +1,4 @@
-# heuristic.py
+#CS4750 HW4 Group 32
 
 # Function to evaluate the board state using the heuristic provided in the assignment
 def evaluate_board(board):
