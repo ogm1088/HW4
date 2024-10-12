@@ -38,7 +38,7 @@ def is_terminal_state(board):
     Check if the game has reached a terminal state (win, lose, or tie):
     - A player wins if they have 4 consecutive 'X' or 'O' in a row (horizontal, vertical, or diagonal).
     - The game is a tie if the board is full with no winner.
-    :return: 'X' if Player X wins, 'O' if Player O wins, 'Tie' if it's a tie, or None if the game is not over.
+    :return: 'X' if Player 1 wins, 'O' if Player 2 wins, 'Tie' if it's a tie, or None if the game is not over.
     """
     # Check horizontal wins (4 consecutive marks horizontally)
     for row in range(5):
@@ -75,7 +75,7 @@ def is_terminal_state(board):
 # Function to run the game and announce the winner or tie
 def play_game():
     """
-    Main loop to manage the game between Player X and Player O.
+    Main loop to manage the game between Player 1(X) and Player 2(O).
     Alternates turns between players until the game reaches a terminal state (win, lose, or tie).
     """
     from player import minimax_move, make_move  # Avoid circular import by moving inside the function

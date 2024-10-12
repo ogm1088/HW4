@@ -8,7 +8,7 @@ import time  # Import time module to measure execution time for each move
 
 def play_game():
     """
-    Main loop to manage the game between Player X and Player O.
+    Main loop to manage the game between Player 1(X) and Player 2(O).
     Alternates turns between players until the game reaches a terminal state (win, lose, or tie).
     """
     # Initialize the game board with the starting positions for player 1 and 2
